@@ -4,8 +4,16 @@ import {
   UPDATE_PRODUCTS,
   UPDATE_CURRENT_CATEGORY,
   UPDATE_CATEGORIES,
+  ADD_TO_CART,
+  ADD_MULTIPLE_TO_CART,
+  REMOVE_FROM_CART,
+  UPDATE_CART_QUANTITY,
+  CLEAR_CART,
+  TOGGLE_CART,
 } from "./actions";
 
+// Let's not forget to include the ...state operator to preserve everything else on state.
+// Then we can update the cart property to add action.product to the end of the array.
 export const reducer = (state, action) => {
   switch (action.type) {
     case UPDATE_PRODUCTS:
@@ -13,6 +21,7 @@ export const reducer = (state, action) => {
         ...state,
         products: [...action.products],
       };
+
     case UPDATE_CATEGORIES:
       return {
         ...state,
@@ -25,6 +34,55 @@ export const reducer = (state, action) => {
         currentCategory: action.currentCategory,
       };
 
+    case ADD_TO_CART:
+      return {
+        ...state,
+        // set cartOpen to true so that users can immediately view the cart with the newly added item, if it's not already open.
+        cartOpen: true,
+        cart: [...state.cart, action.product],
+      };
+
+    case ADD_MULTIPLE_TO_CART:
+      return {
+        ...state,
+        cartOpen: true,
+        cart: [...state.cart, ...action.products],
+      };
+
+    case REMOVE_FROM_CART:
+      let newState = state.cart.filter((product) => product._id !== action._id);
+
+      return {
+        ...state,
+        cartOpen: newState.length > 0,
+        cart: newState,
+      };
+
+    case UPDATE_CART_QUANTITY:
+      return {
+        ...state,
+        cartOpen: true,
+        cart: state.cart.map((product) => {
+          if (action._id === product._id) {
+            product.purchaseQuantity = action.purchaseQuantity;
+          }
+          return product;
+        }),
+      };
+
+    case CLEAR_CART:
+      return {
+        ...state,
+        cartOpen: false,
+        cart: [],
+      };
+
+    case TOGGLE_CART:
+      return {
+        ...state,
+        cartOpen: !state.cartOpen,
+      };
+      
     default:
       return state;
   }

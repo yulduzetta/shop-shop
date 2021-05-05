@@ -1,11 +1,16 @@
+import { useQuery } from "@apollo/react-hooks";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-
-import { QUERY_PRODUCTS } from "../utils/queries";
-import { UPDATE_PRODUCTS } from "../utils/actions";
 import spinner from "../assets/spinner.gif";
+import Cart from "../components/Cart";
+import {
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+  UPDATE_CART_QUANTITY,
+  UPDATE_PRODUCTS,
+} from "../utils/actions";
 import { useStoreContext } from "../utils/GlobalState";
+import { QUERY_PRODUCTS } from "../utils/queries";
 
 function Detail() {
   const [state, dispatch] = useStoreContext();
@@ -17,7 +22,31 @@ function Detail() {
 
   // const products = data?.products || [];
 
-  const { products } = state;
+  const { products, cart } = state;
+
+  const addToCart = () => {
+    const iteminCart = cart.find((cartItem) => cartItem._id === id);
+
+    if (iteminCart) {
+      dispatch({
+        type: UPDATE_CART_QUANTITY,
+        _id: id,
+        purchaseQuantity: parseInt(iteminCart.purchaseQuantity) + 1,
+      });
+    } else {
+      dispatch({
+        type: ADD_TO_CART,
+        product: { ...currentProduct, purchaseQuantity: 1 },
+      });
+    }
+  };
+
+  const removeFromCart = () => {
+    dispatch({
+      type: REMOVE_FROM_CART,
+      _id: currentProduct._id,
+    });
+  };
 
   // What happens if someone just sent you this product's URL
   // and this is the first time you've loaded this application?
@@ -57,8 +86,13 @@ function Detail() {
 
           <p>
             <strong>Price:</strong>${currentProduct.price}{" "}
-            <button>Add to Cart</button>
-            <button>Remove from Cart</button>
+            <button onClick={addToCart}>Add to Cart</button>
+            <button
+              disabled={!cart.find((p) => p._id === currentProduct._id)}
+              onClick={removeFromCart}
+            >
+              Remove from Cart
+            </button>
           </p>
 
           <img
@@ -68,6 +102,7 @@ function Detail() {
         </div>
       ) : null}
       {loading ? <img src={spinner} alt="loading" /> : null}
+      <Cart />
     </>
   );
 }

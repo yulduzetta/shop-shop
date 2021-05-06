@@ -2,17 +2,19 @@ import React, { useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { QUERY_CATEGORIES } from "../../utils/queries";
 import { useStoreContext } from "../../utils/GlobalState";
+import { idbPromise } from "../../utils/helpers";
 
 import {
   UPDATE_CURRENT_CATEGORY,
   UPDATE_CATEGORIES,
+  UPDATE_CART_QUANTITY,
 } from "../../utils/actions";
 
 function CategoryMenu() {
   const [state, dispatch] = useStoreContext();
   const { categories } = state;
 
-  const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
 
   // useEffect() Hook works. It is a function that takes two arguments,
   // a function to run given a certain condition, and then the condition.
@@ -31,8 +33,16 @@ function CategoryMenu() {
         type: UPDATE_CATEGORIES,
         categories: categoryData.categories,
       });
+      categoryData.categories.forEach((category) => {
+        idbPromise("categories", "put", category);
+      });
+    } else if (!loading) {
+      dispatch({
+        type: UPDATE_CART_QUANTITY,
+        categories: categories,
+      });
     }
-  }, [categoryData, dispatch]);
+  }, [categoryData, loading, dispatch]);
 
   const handleClick = (id) => {
     dispatch({

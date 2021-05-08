@@ -8,7 +8,7 @@ import {
   REMOVE_FROM_CART,
   UPDATE_CART_QUANTITY,
   UPDATE_PRODUCTS,
-} from "../utils/actions";
+} from "../utils/redux/actions";
 
 // import { useStoreContext } from "../utils/GlobalState";
 import {useSelector, useDispatch} from 'react-redux'

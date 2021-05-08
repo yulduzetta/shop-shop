@@ -1,10 +1,15 @@
 import React from "react";
-import { useStoreContext } from "../../utils/GlobalState";
-import { REMOVE_FROM_CART, UPDATE_CART_QUANTITY } from "../../utils/actions";
+// import { useStoreContext } from "../../utils/GlobalState";
+import { useDispatch } from "react-redux";
+import {
+  REMOVE_FROM_CART,
+  UPDATE_CART_QUANTITY,
+} from "../../utils/redux/actions";
 import { idbPromise } from "../../utils/helpers";
 
 const CartItem = ({ item }) => {
-  const [, dispatch] = useStoreContext();
+  // const [, dispatch] = useStoreContext();
+  const dispatch = useDispatch();
 
   // Note that we only destructured the dispatch() function from the useStoreContext Hook,
   // because the CartItem component has no need to read state.

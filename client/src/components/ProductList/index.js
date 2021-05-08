@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
+import { useSelector, useDispatch } from "react-redux";
 
 import ProductItem from "../ProductItem";
 import { QUERY_PRODUCTS } from "../../utils/queries";
 import spinner from "../../assets/spinner.gif";
 
-import { useStoreContext } from "../../utils/GlobalState";
-import { UPDATE_PRODUCTS } from "../../utils/actions";
+// import { useStoreContext } from "../../utils/GlobalState";
+import { UPDATE_PRODUCTS } from "../../utils/redux/actions";
 import { idbPromise } from "../../utils/helpers";
 
 function ProductList() {
   // Again, we immediately execute the useStoreContext() function to retrieve
   // the current global state object and the dipatch() method to update state.
-  const [state, dispatch] = useStoreContext();
 
+  // const [state, dispatch] = useStoreContext();
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
   const { currentCategory } = state;
   const { loading, data } = useQuery(QUERY_PRODUCTS);
 

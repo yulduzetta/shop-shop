@@ -9,12 +9,19 @@ import {
   UPDATE_CART_QUANTITY,
   UPDATE_PRODUCTS,
 } from "../utils/actions";
-import { useStoreContext } from "../utils/GlobalState";
+
+// import { useStoreContext } from "../utils/GlobalState";
+import {useSelector, useDispatch} from 'react-redux'
+
 import { QUERY_PRODUCTS } from "../utils/queries";
 import { idbPromise } from "../utils/helpers";
 
 function Detail() {
-  const [state, dispatch] = useStoreContext();
+  // const [state, dispatch] = useStoreContext();
+
+  const state = useSelector(state => state);
+  const dispatch = useDispatch();
+
   const { id } = useParams();
 
   const [currentProduct, setCurrentProduct] = useState({});

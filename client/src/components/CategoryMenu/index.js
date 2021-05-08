@@ -1,19 +1,23 @@
 import React, { useEffect } from "react";
+import {useSelector, useDispatch} from 'react-redux'
 import { useQuery } from "@apollo/react-hooks";
-import { QUERY_CATEGORIES } from "../../utils/queries";
-import { useStoreContext } from "../../utils/GlobalState";
+
 import { idbPromise } from "../../utils/helpers";
 
+import { QUERY_CATEGORIES } from "../../utils/queries";
+// import { useStoreContext } from "../../utils/GlobalState";
 import {
   UPDATE_CURRENT_CATEGORY,
   UPDATE_CATEGORIES,
   UPDATE_CART_QUANTITY,
-} from "../../utils/actions";
+} from "../../utils/redux/actions";
 
 function CategoryMenu() {
-  const [state, dispatch] = useStoreContext();
-  const { categories } = state;
+  // const [state, dispatch] = useStoreContext();
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
 
+  const { categories } = state;
   const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
 
   // useEffect() Hook works. It is a function that takes two arguments,
